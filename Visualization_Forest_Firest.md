@@ -3,36 +3,11 @@ Data Visualization: Analyzing Forest Fires
 RPrice
 2023-01-18
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax
-for authoring HTML, PDF, and MS Word documents. For more details on
-using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that
-includes both content as well as the output of any embedded R code
-chunks within the document. You can embed an R code chunk like this:
-
-``` r
-summary(cars)
-```
-
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
-
-## Including Plots
-
-You can also embed plots, for example:
-
-![](Visualization_Forest_Firest_files/figure-gfm/pressure-1.png)<!-- -->
-
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
+This project will use data from a study entitled “A Data Mining Approach
+to Predict Forest Fires using Meteorological Data” ([Cortez & Morais,
+2007](https://www.researchgate.net/publication/238767143_A_Data_Mining_Approach_to_Predict_Forest_Fires_using_Meteorological_Data)).
+The data are available
+[here](https://archive.ics.uci.edu/ml/machine-learning-databases/forest-fires/).
 
 # Initializing
 
@@ -64,3 +39,35 @@ head(forestfires)
     ## 4     8     6 mar   fri    91.7  33.3  77.5   9     8.3    97   4     0.2     0
     ## 5     8     6 mar   sun    89.3  51.3 102.    9.6  11.4    99   1.8   0       0
     ## 6     8     6 aug   sun    92.3  85.3 488    14.7  22.2    29   5.4   0       0
+
+The variables are described in the paper.
+
+``` r
+variable_matrix <- matrix(c("X", "x-axis coordinate (from 1 to 9)", "Y", "y-axis coordinate (from 1 to 9)", "month", "Month of the year (January to December)", "day", "Day of the week (Monday to Sunday)", "FFMC", "Fine fuel moisture code", "DMC", "Duff moisture code", "DC", "Drought code", "ISI", "Initial speed index", "temp", "Outside temperature (in ◦C)", "RH", "Outside relative humidity (in %)", "wind", "Outside wind speed (in km/h)", "rain", "Outside rain (in mm/m2)", "area", "Total burned area (in ha)"), ncol=2, byrow=TRUE)
+colnames(variable_matrix) <- c("Variable", "Description")
+rownames(variable_matrix) <- c(1:nrow(variable_matrix))
+variable_table <- as.table(variable_matrix)
+kable(variable_table)
+```
+
+| Variable | Description                             |
+|:---------|:----------------------------------------|
+| X        | x-axis coordinate (from 1 to 9)         |
+| Y        | y-axis coordinate (from 1 to 9)         |
+| month    | Month of the year (January to December) |
+| day      | Day of the week (Monday to Sunday)      |
+| FFMC     | Fine fuel moisture code                 |
+| DMC      | Duff moisture code                      |
+| DC       | Drought code                            |
+| ISI      | Initial speed index                     |
+| temp     | Outside temperature (in ◦C)             |
+| RH       | Outside relative humidity (in %)        |
+| wind     | Outside wind speed (in km/h)            |
+| rain     | Outside rain (in mm/m2)                 |
+| area     | Total burned area (in ha)               |
+
+FFMC, DMC, DC, and ISI are from the Canadian Forest Fire Weather Index
+(FWI) System, which “consists of six components that account for the
+effects of fuel moisture and weather conditions on fire behavior”
+([Natural Resources
+Canada](https://cwfis.cfs.nrcan.gc.ca/background/summary/fwi)).

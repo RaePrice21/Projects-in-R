@@ -11,6 +11,10 @@ The data are available
 
 # Initializing
 
+``` r
+rm(list=ls())
+```
+
     ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
     ## ✔ ggplot2 3.4.0      ✔ purrr   1.0.1 
     ## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
@@ -71,3 +75,116 @@ FFMC, DMC, DC, and ISI are from the Canadian Forest Fire Weather Index
 effects of fuel moisture and weather conditions on fire behavior”
 ([Natural Resources
 Canada](https://cwfis.cfs.nrcan.gc.ca/background/summary/fwi)).
+
+# Data Cleaning
+
+Checking the month and day values:
+
+``` r
+print(forestfires %>% pull(month) %>% unique)
+```
+
+    ##  [1] "mar" "oct" "aug" "sep" "apr" "jun" "jul" "feb" "jan" "dec" "may" "nov"
+
+``` r
+print(forestfires %>% pull(day) %>% unique)
+```
+
+    ## [1] "fri" "tue" "sat" "sun" "mon" "wed" "thu"
+
+Ordering months:
+
+``` r
+month_order <- c("jan", "feb", "mar", "apr", "may", "jun",
+                 "jul", "aug", "sep", "oct", "nov", "dec")
+forestfires <- forestfires %>% mutate(month = factor(month, levels=month_order))
+forestfires %>% pull(month) %>% unique
+```
+
+    ##  [1] mar oct aug sep apr jun jul feb jan dec may nov
+    ## Levels: jan feb mar apr may jun jul aug sep oct nov dec
+
+Ordering days of the week:
+
+``` r
+day_order <- c("mon", "tue", "wed", "thu", "fri", "sat",
+                 "sun")
+forestfires <- forestfires %>% mutate(day = factor(day, levels=day_order))
+forestfires %>% pull(day) %>% unique
+```
+
+    ## [1] fri tue sat sun mon wed thu
+    ## Levels: mon tue wed thu fri sat sun
+
+# Data Visualization
+
+Two questions: \* In which months do forest fires happen the most? \* On
+which days of the week do forest fires happen the most?
+
+## In which months do forest fires happen the most?
+
+Count the number of forest fires per month:
+
+``` r
+fires_monthly <- forestfires %>% group_by(month) %>% summarize(count=n())
+fires_monthly
+```
+
+    ## # A tibble: 12 × 2
+    ##    month count
+    ##    <fct> <int>
+    ##  1 jan       2
+    ##  2 feb      20
+    ##  3 mar      54
+    ##  4 apr       9
+    ##  5 may       2
+    ##  6 jun      17
+    ##  7 jul      32
+    ##  8 aug     184
+    ##  9 sep     172
+    ## 10 oct      15
+    ## 11 nov       1
+    ## 12 dec       9
+
+Visualization:
+
+``` r
+fires_monthly %>% ggplot(aes(x=month, y=count)) +
+                         geom_col(fill = "dark red") +
+                         labs(title = "Forest Fires Per Month",
+                               x = "Month", y = "Total Fires") 
+```
+
+![](Visualization_Forest_Firest_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+## On which days of the week do forest fires happen the most?
+
+Count the number of forest fires per day:
+
+``` r
+fires_daily <- forestfires %>% group_by(day) %>% summarize(count=n())
+fires_daily
+```
+
+    ## # A tibble: 7 × 2
+    ##   day   count
+    ##   <fct> <int>
+    ## 1 mon      74
+    ## 2 tue      64
+    ## 3 wed      54
+    ## 4 thu      61
+    ## 5 fri      85
+    ## 6 sat      84
+    ## 7 sun      95
+
+Visualization:
+
+``` r
+fires_daily %>% ggplot(aes(x=day, y=count)) +
+                         geom_col(fill = "dark red") +
+                         labs(
+                           title = "Forest Fires By Day of the Week",
+                               x = "Day", y = "Total Fires") 
+```
+
+![](Visualization_Forest_Firest_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->

@@ -157,6 +157,9 @@ fires_monthly %>% ggplot(aes(x=month, y=count)) +
 
 ![](Visualization_Forest_Firest_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
+The months with the most forest fires are August and September, with
+close to 175 fires.
+
 ## On which days of the week do forest fires happen the most?
 
 Count the number of forest fires per day:
@@ -188,3 +191,10 @@ fires_daily %>% ggplot(aes(x=day, y=count)) +
 ```
 
 ![](Visualization_Forest_Firest_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+There is a slightly higher number of forest fires per day on the
+weekends, Friday through Sunday.
+
+## 
+
+Next, I will use a pivot table and plots to visualize how variables
+change over the months.

@@ -194,7 +194,40 @@ fires_daily %>% ggplot(aes(x=day, y=count)) +
 There is a slightly higher number of forest fires per day on the
 weekends, Friday through Sunday.
 
-## 
+## Creating long data
 
-Next, I will use a pivot table and plots to visualize how variables
-change over the months.
+Next, I will use plots to visualize how variables change over the
+months. We are interested in eight variables:
+
+``` r
+variable_matrix[5:12, 1:2]
+```
+
+    ##    Variable Description                       
+    ## 5  "FFMC"   "Fine fuel moisture code"         
+    ## 6  "DMC"    "Duff moisture code"              
+    ## 7  "DC"     "Drought code"                    
+    ## 8  "ISI"    "Initial speed index"             
+    ## 9  "temp"   "Outside temperature (in ◦C)"     
+    ## 10 "RH"     "Outside relative humidity (in %)"
+    ## 11 "wind"   "Outside wind speed (in km/h)"    
+    ## 12 "rain"   "Outside rain (in mm/m2)"
+
+Creating long data:
+
+``` r
+forestfires_long <- forestfires %>%
+pivot_longer(cols = c(FFMC, DMC, DC, ISI, temp, RH, wind, rain), names_to = "variable", values_to = "value")
+```
+
+Plotting multiple variables:
+
+``` r
+forestfires_long %>% ggplot(
+  aes(x = month, y = value, color = variable)) +
+  geom_point()
+```
+
+![](Visualization_Forest_Firest_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+The data is too cramped to read on a single plot, so I will make
+multiple subplots.

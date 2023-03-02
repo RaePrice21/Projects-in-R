@@ -6,7 +6,7 @@ RPrice
 This project will use data from a study entitled “A Data Mining Approach
 to Predict Forest Fires using Meteorological Data” ([Cortez & Morais,
 2007](https://www.researchgate.net/publication/238767143_A_Data_Mining_Approach_to_Predict_Forest_Fires_using_Meteorological_Data)).
-The data are available
+The data were collected in northeast Portugal and are available
 [here](https://archive.ics.uci.edu/ml/machine-learning-databases/forest-fires/).
 
 # Initializing
@@ -70,11 +70,22 @@ kable(variable_table)
 | rain     | Outside rain (in mm/m2)                 |
 | area     | Total burned area (in ha)               |
 
-FFMC, DMC, DC, and ISI are from the Canadian Forest Fire Weather Index
-(FWI) System, which “consists of six components that account for the
-effects of fuel moisture and weather conditions on fire behavior”
-([Natural Resources
+Fine fuel moisture code (FFMC), Duff moisture code (DMC), Drought code
+(DC), and Initial speed index (ISI) are from the Canadian Forest Fire
+Weather Index (FWI) System, which “consists of six components that
+account for the effects of fuel moisture and weather conditions on fire
+behavior” ([Natural Resources
 Canada](https://cwfis.cfs.nrcan.gc.ca/background/summary/fwi)).
+According to the US National Wildfire Coordinating Group, FFMC
+represents the fuel moisture of forest litter that is shaded under the
+tree canopy (ranges 0 to 101). DMC represents the fuel moisture of of
+decomposed organic topsoil under the litter(unitless and open-ended). DC
+represents deep-soil drought conditions (unitless, maximum value of
+1000, with values 800 and over indicating extreme drought). ISI is a
+fire behavior index. It uses wind speed and fuel moisture to estimate a
+fire’s spread potential (unitless, open-ended) ([NWCG’s Fire Weather
+Index
+System](https://www.nwcg.gov/publications/pms437/cffdrs/fire-weather-index-system#TOC-FWI-Fuel-Moisture-Codes)).
 
 # Data Cleaning
 
@@ -231,3 +242,82 @@ forestfires_long %>% ggplot(
 ![](Visualization_Forest_Firest_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 The data is too cramped to read on a single plot, so I will make
 multiple subplots.
+
+``` r
+#theme_set(theme_gray())
+theme_set(theme_light())
+#trying to make title background white
+title_theme <- theme_update(strip.background = element_rect(fill = "grey20", color = "grey20"))
+#theme_set(title_theme) why don't you need this
+
+new_titles <- c("Fine fuel moisture code", "Duff moisture code", "Drought code", "Initial speed index", "Temperature (◦C)", "Relative humidity (%)", "Wind speed (km per h)", "Rain (mm per square m)")
+#subplots can have an individual title or ylab, not both
+names(new_titles) <- c("FFMC", "DMC", "DC", "ISI", "temp", "RH", "wind", "rain")
+
+
+forestfires_long %>% ggplot(
+  aes(x = month, y = value)) +
+  geom_point(shape = 20) +
+  facet_wrap(vars(variable), scales = "free_y", 
+             labeller = as_labeller(new_titles)) + #new subplot titles
+  scale_x_discrete(labels=c("jan", "", "mar", "", "may", "","jul", "",  
+                            "sep", "", "nov", "")) + #label 6 months
+  ylab("") + #removing unnecessary "value" label
+  theme(axis.text.x = element_text(size=9, angle = -40, vjust = 0.5, hjust = 0, color = "black") # rotate and move x tick labels (months)
+        ) 
+```
+
+![](Visualization_Forest_Firest_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+Recall that DMC and ISI are unitless and open-ended. FFMC ranges from 0
+to 101. DC has a maximum value of 1000, with values 800 and up
+indicating extreme drought. DC increases steadily throughout the summer,
+peaking in September. It looks like the max values are close to the
+extreme drought value in August and September. Temperature peaks in
+August. Interestingly, DMC appears to increase in the warmer months.
+There is a single very high rain value in August. Wind speed appears to
+decrease slightly in the fall and winter. ISI, related to wind speed but
+also to fuel moisture, peaks in August. As next steps, we can look more
+closely at variables that may be most closely related to increased
+wildfires in August and September: temperature, DC, and ISI. I would
+also like to repeat the rain graph without the outlier.
+
+Selecting the top five fires with highest rain values:
+
+``` r
+forestfires %>% slice_max(rain, n = 5)
+```
+
+    ## # A tibble: 5 × 13
+    ##       X     Y month day    FFMC   DMC    DC   ISI  temp    RH  wind  rain  area
+    ##   <dbl> <dbl> <fct> <fct> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1     7     5 aug   tue    96.1  181.  671.  14.3  27.3    63   4.9   6.4 10.8 
+    ## 2     5     4 aug   fri    91    167.  753.   7.1  21.1    71   7.6   1.4  2.17
+    ## 3     7     4 aug   sun    91.8  175.  701.  13.8  21.9    73   7.6   1    0   
+    ## 4     8     6 aug   tue    96.1  181.  671.  14.3  21.6    65   4.9   0.8  0   
+    ## 5     7     5 aug   tue    96.1  181.  671.  14.3  21.6    65   4.9   0.8  0
+
+The maximum rainfall is 6.4 mm/m2, and the next highest value is 1.4. It
+is a statistical outlier but is not impossible. The drought code is
+still very high for that incident. Let’s make a larger rain graph to see
+the values more easily:
+
+``` r
+forestfires %>% ggplot(aes(x = month, y = rain)) +
+                         geom_point(shape = 20) +
+                         labs(title = "Rainfall")
+```
+
+![](Visualization_Forest_Firest_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+The plot shows rain occuring during fire incidents only once in March
+and July, five times in August. There was no rainfall during fires in
+any other months. The drought code is highest in the summer months,
+making it unlikely that this location experiences regular summer rain.
+Britannica indicates that Portugal has variable rainfall, but inland
+regions experience summer drought ([Britannica, Climate of
+Portugal](https://www.britannica.com/place/Portugal/Climate)). With that
+background, the data may indicate that during the winter months,
+conditions are wet enough that fires occur only on the driest days.
+However, in the summer, drought may be intense enough that fires are
+able to establish and spread in dry fuel even during rainfall.

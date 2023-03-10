@@ -15,21 +15,17 @@ Reading in the data:
 
 ``` r
 forestfires <- read_csv("forestfires.csv", show_col_types = FALSE)
+head(forestfires) %>% kable
 ```
 
-``` r
-head(forestfires)
-```
-
-    ## # A tibble: 6 × 13
-    ##       X     Y month day    FFMC   DMC    DC   ISI  temp    RH  wind  rain  area
-    ##   <dbl> <dbl> <chr> <chr> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1     7     5 mar   fri    86.2  26.2  94.3   5.1   8.2    51   6.7   0       0
-    ## 2     7     4 oct   tue    90.6  35.4 669.    6.7  18      33   0.9   0       0
-    ## 3     7     4 oct   sat    90.6  43.7 687.    6.7  14.6    33   1.3   0       0
-    ## 4     8     6 mar   fri    91.7  33.3  77.5   9     8.3    97   4     0.2     0
-    ## 5     8     6 mar   sun    89.3  51.3 102.    9.6  11.4    99   1.8   0       0
-    ## 6     8     6 aug   sun    92.3  85.3 488    14.7  22.2    29   5.4   0       0
+|   X |   Y | month | day | FFMC |  DMC |    DC |  ISI | temp |  RH | wind | rain | area |
+|----:|----:|:------|:----|-----:|-----:|------:|-----:|-----:|----:|-----:|-----:|-----:|
+|   7 |   5 | mar   | fri | 86.2 | 26.2 |  94.3 |  5.1 |  8.2 |  51 |  6.7 |  0.0 |    0 |
+|   7 |   4 | oct   | tue | 90.6 | 35.4 | 669.1 |  6.7 | 18.0 |  33 |  0.9 |  0.0 |    0 |
+|   7 |   4 | oct   | sat | 90.6 | 43.7 | 686.9 |  6.7 | 14.6 |  33 |  1.3 |  0.0 |    0 |
+|   8 |   6 | mar   | fri | 91.7 | 33.3 |  77.5 |  9.0 |  8.3 |  97 |  4.0 |  0.2 |    0 |
+|   8 |   6 | mar   | sun | 89.3 | 51.3 | 102.2 |  9.6 | 11.4 |  99 |  1.8 |  0.0 |    0 |
+|   8 |   6 | aug   | sun | 92.3 | 85.3 | 488.0 | 14.7 | 22.2 |  29 |  5.4 |  0.0 |    0 |
 
 The variables are described in the paper.
 
@@ -79,13 +75,13 @@ System](https://www.nwcg.gov/publications/pms437/cffdrs/fire-weather-index-syste
 Checking the month and day values:
 
 ``` r
-print(forestfires %>% pull(month) %>% unique)
+forestfires %>% pull(month) %>% unique
 ```
 
     ##  [1] "mar" "oct" "aug" "sep" "apr" "jun" "jul" "feb" "jan" "dec" "may" "nov"
 
 ``` r
-print(forestfires %>% pull(day) %>% unique)
+forestfires %>% pull(day) %>% unique
 ```
 
     ## [1] "fri" "tue" "sat" "sun" "mon" "wed" "thu"
@@ -424,7 +420,24 @@ data.
 
 ## Conclusion
 
-After examining eight variables and their relationship to the number and
-spread of forest fires, fine fuel moisture code stands out. It can range
-from 0 to 101, but only one fire occurred with a value under 50. Most
-fires occurred when FFMC was between 80 and 101.
+I examined eight variables and their relationship to the number and
+spread of forest fires in northeast Portugal. The objective was to
+answer four questions:
+
+- In which months do forest fires happen the most?
+  - August and September have by far the most fires, with over 170 fires
+    per month. The next highest month is March, with 54 fires.
+- On which days of the week do forest fires happen the most?
+  - Fires are slightly more common on the weekends, Friday through
+    Sunday.
+- Which explanatory variables are associated with more fire incidents?
+  - More fires occur at higher temperatures, higher Drought Code values,
+    and higher Duff Moisture Code values. Fine Fuel Moisture Code is
+    almost always high (over 80 on a scale of 0-101) when fires occur.
+    Only one fire occurred when FFMC was below 50, FFMC may be the best
+    predictor of fire occurrence.
+- Which explanatory variables are associated with more severe fires?
+  - Area burned was used as a proxy for fire severity. During larger
+    fires, temperature and Drought Code tend to be moderately high. Fine
+    Fuel Moisture Code was high, over 80, and larger fires tend to have
+    values over 90.

@@ -27,7 +27,7 @@ head(forestfires) %>% kable
 |   8 |   6 | mar   | sun | 89.3 | 51.3 | 102.2 |  9.6 | 11.4 |  99 |  1.8 |  0.0 |    0 |
 |   8 |   6 | aug   | sun | 92.3 | 85.3 | 488.0 | 14.7 | 22.2 |  29 |  5.4 |  0.0 |    0 |
 
-The variables are described in the paper.
+The variables are described in the paper:
 
 ``` r
 variable_matrix <- matrix(c("X", "x-axis coordinate (from 1 to 9)", "Y", "y-axis coordinate (from 1 to 9)", "month", "Month of the year (January to December)", "day", "Day of the week (Monday to Sunday)", "FFMC", "Fine fuel moisture code", "DMC", "Duff moisture code", "DC", "Drought code", "ISI", "Initial speed index", "temp", "Outside temperature (in ◦C)", "RH", "Outside relative humidity (in %)", "wind", "Outside wind speed (in km/h)", "rain", "Outside rain (in mm/m2)", "area", "Total burned area (in ha)"), ncol=2, byrow=TRUE)

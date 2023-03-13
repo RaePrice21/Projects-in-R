@@ -9,6 +9,14 @@ to Predict Forest Fires using Meteorological Data” ([Cortez & Morais,
 The data were collected in northeast Portugal and are available
 [here](https://archive.ics.uci.edu/ml/machine-learning-databases/forest-fires/).
 
+The goal of the project is to use `ggplot2` to create data
+visualizations answering four questions:
+
+- In which months do forest fires happen the most?
+- On which days of the week do forest fires happen the most?
+- Which explanatory variables are associated with more fire incidents?
+- Which explanatory variables are associated with more severe fires?
+
 ## Initializing
 
 Reading in the data:
@@ -115,12 +123,8 @@ forestfires %>% pull(day) %>% unique
 
 ## Data Visualization
 
-The data visualizations will aim to answer four questions:
-
-- In which months do forest fires happen the most?
-- On which days of the week do forest fires happen the most?
-- Which explanatory variables are associated with more fire incidents?
-- Which explanatory variables are associated with more severe fires?
+Plots will be created and interpreted to address each of the four
+guiding questions of the project.
 
 Setting the theme for all plots:
 
